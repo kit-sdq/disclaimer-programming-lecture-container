@@ -1,7 +1,7 @@
 FROM ubuntu:latest
 
 RUN apt-get update && apt-get install -y locales && rm -rf /var/lib/apt/lists/* \
-    && localedef -i de_DE -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
+    && localedef -i de_DE -c -f UTF-8 -A /usr/share/locale/locale.alias de_DE.UTF-8
 ENV LANG de_DE.utf8
 RUN apt-get update && apt-get install -y openjdk-11-jdk-headless maven git
 RUN git clone https://github.com/kit-sdq/disclaimer-programming-lecture-generation.git
