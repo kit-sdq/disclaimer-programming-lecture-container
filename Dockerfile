@@ -1,13 +1,10 @@
 FROM ubuntu:latest
 
-RUN apt-get update && apt-get install -y locales && rm -rf /var/lib/apt/lists/* \
-    && localedef -i de_DE -c -f UTF-8 -A /usr/share/locale/locale.alias de_DE.UTF-8
-ENV LANG de_DE.utf8
-RUN apt-get update && apt-get install -y openjdk-11-jdk-headless maven git
+RUN apt-get update && apt-get install -y git python3 python3-pip gunicorn wget
+RUN wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.focal_amd64.deb && apt install -y ./wkhtmltox_0.12.6-1.focal_amd64.deb
 RUN git clone https://github.com/kit-sdq/disclaimer-programming-lecture-generation.git
-RUN cd disclaimer-programming-lecture-generation && mvn verify 
+RUN cd disclaimer-programming-lecture-generation && pip3 install flask pdfkit qrcode Pillow
 
+EXPOSE 5000/tcp
 
-EXPOSE 8080/tcp
-
-ENTRYPOINT java -jar disclaimer-programming-lecture-generation/target/disclaimer.generation-0.0.1-SNAPSHOT.jar
+ENTRYPOINT cd disclaimer-programming-lecture-generation/disclaimer && gunicorn wsgi:app --bind 0.0.0.0:5000 --error-logfile test.log
